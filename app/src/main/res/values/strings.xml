@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">RSS_5</string>
+    <string-array name="categories">
+        <item>USA</item>
+        <item>Africa</item>
+        <item>Asia</item>
+        <item>Middle Est</item>
+        <item>Europ</item>
+        <item>Americas</item>
+        <item>Science and Technology</item>
+        <item>Economy</item>
+        <item>Health</item>
+        <item>Arts and Entertainment</item>
+        <item>2016 USA Votes</item>
+        <item>One-Minute Features</item>
+        <item>Voa Editors Picks</item>
+        <item>Extremism Watch</item>
+        <item>Day In Photos</item>
+        <item>Visiting the USA</item>
+    </string-array>
+    <string name="category_name">Category Name</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="date">Date</string>
 </resources>
