@@ -18,8 +18,27 @@
         <item>Day In Photos</item>
         <item>Visiting the USA</item>
     </string-array>
+    <string-array name="categories_link">
+        <item>http://www.voanews.com/api/zq$omekvi_</item>
+        <item>http://www.voanews.com/api/z-$otevtiq</item>
+        <item>http://www.voanews.com/api/zo$o_egviy</item>
+        <item>http://www.voanews.com/api/zr$opeuvim</item>
+        <item>http://www.voanews.com/api/zj$oveytit</item>
+        <item>http://www.voanews.com/api/zoripegtim</item>
+        <item>http://www.voanews.com/api/zyritequir</item>
+        <item>http://www.voanews.com/api/zy$oqeqtii</item>
+        <item>http://www.voanews.com/api/zt$opeitim</item>
+        <item>http://www.voanews.com/api/zp$ove-vir </item>
+        <item>http://www.voanews.com/api/zuriqiepuiqm</item>
+        <item>http://www.voanews.com/api/z$roqmetuoqm</item>
+        <item>http://www.voanews.com/api/zgkoq_e_miqv</item>
+        <item>http://www.voanews.com/api/z$uiqyetppqv</item>
+        <item>http://www.voanews.com/api/z$-jqetv-i</item>
+        <item>http://www.voanews.com/api/zj$qqmeytoqm</item>
+    </string-array>
     <string name="category_name">Category Name</string>
     <string name="title">Title</string>
     <string name="description">Description</string>
     <string name="date">Date</string>
+    <string name="position">position</string>
 </resources>
