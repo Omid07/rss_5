@@ -21,10 +21,12 @@ import javax.xml.parsers.ParserConfigurationException;
 public class ProcessXML {
     private InputStream mInputStream;
     private CategoryNews mCategory;
+    private String mCategoryName;
     private ArrayList<CategoryNews> mCategoryNewsList;
 
-    public ProcessXML(InputStream inputStream) {
+    public ProcessXML(InputStream inputStream, String categoryName) {
         this.mInputStream = inputStream;
+        mCategoryName = categoryName;
     }
 
     public ArrayList<CategoryNews> getData() {
@@ -47,6 +49,7 @@ public class ProcessXML {
                 for (int j = 0; j < itemChildren.getLength(); j++) {
                     currentChild = itemChildren.item(j);
                     String name = currentChild.getNodeName();
+                    mCategory.setCategoryName(mCategoryName);
                     switch (name) {
                         case Constant.TITLE:
                             String title = currentChild.getTextContent();

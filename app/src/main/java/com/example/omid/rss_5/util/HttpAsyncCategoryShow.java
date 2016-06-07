@@ -20,11 +20,13 @@ import java.util.ArrayList;
 public class HttpAsyncCategoryShow extends AsyncTask<Void, Void, ArrayList<CategoryNews>> {
     private NewsActivity mData;
     private String mCategoryUrl;
+    private String mCategoryName;
     private ArrayList<CategoryNews> mCategoryNewsList;
 
-    public HttpAsyncCategoryShow(NewsActivity data, String categoryUrl) {
+    public HttpAsyncCategoryShow(NewsActivity data, String categoryUrl, String categoryName) {
         mData = data;
         mCategoryUrl = categoryUrl;
+        mCategoryName = categoryName;
     }
 
     @Override
@@ -37,7 +39,7 @@ public class HttpAsyncCategoryShow extends AsyncTask<Void, Void, ArrayList<Categ
             connection.setRequestMethod(Constant.GET);
             InputStream inputStream = null;
             inputStream = connection.getInputStream();
-            ProcessXML processXML = new ProcessXML(inputStream);
+            ProcessXML processXML = new ProcessXML(inputStream, mCategoryName);
             mCategoryNewsList = processXML.getData();
             return mCategoryNewsList;
         } catch (MalformedURLException e) {
