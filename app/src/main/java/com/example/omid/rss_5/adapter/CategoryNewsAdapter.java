@@ -1,5 +1,6 @@
 package com.example.omid.rss_5.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,14 +17,16 @@ import java.util.ArrayList;
  */
 public class CategoryNewsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private ArrayList<CategoryNews> categoryNewsArrayList;
+    private Context mContext;
     public CategoryNewsAdapter(ArrayList<CategoryNews> categoryNewsList) {
         this.categoryNewsArrayList = categoryNewsList;
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.category_news_list, parent, false);
-        RecyclerView.ViewHolder viewHolder = new CategoryNewsViewHolder(view);
+        mContext = parent.getContext();
+        View view = LayoutInflater.from(mContext).inflate(R.layout.category_news_list, parent, false);
+        RecyclerView.ViewHolder viewHolder = new CategoryNewsViewHolder(view, mContext);
         return viewHolder;
     }
 

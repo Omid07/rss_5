@@ -1,9 +1,8 @@
 package com.example.omid.rss_5.util;
 
-import com.example.omid.rss_5.util.CategoryNews;
-
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -23,11 +22,12 @@ public class ProcessXML {
     private InputStream mInputStream;
     private CategoryNews mCategory;
     private ArrayList<CategoryNews> mCategoryNewsList;
-    public ProcessXML(InputStream inputStream){
+
+    public ProcessXML(InputStream inputStream) {
         this.mInputStream = inputStream;
     }
 
-    public ArrayList<CategoryNews> getData(){
+    public ArrayList<CategoryNews> getData() {
         try {
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder documentBuilder = null;
@@ -36,18 +36,18 @@ public class ProcessXML {
             xmlDocument = documentBuilder.parse(mInputStream);
             Element rootElement = xmlDocument.getDocumentElement();
             mCategoryNewsList = new ArrayList<>();
-            NodeList items = (NodeList)rootElement.getElementsByTagName("item");
+            NodeList items = rootElement.getElementsByTagName("item");
             NodeList itemChildren = null;
             Node currentChild = null;
             Node curremtItem = null;
-            for (int i=0; i < items.getLength(); i++) {
+            for (int i = 0; i < items.getLength(); i++) {
                 curremtItem = items.item(i);
                 itemChildren = curremtItem.getChildNodes();
                 mCategory = new CategoryNews();
                 for (int j = 0; j < itemChildren.getLength(); j++) {
                     currentChild = itemChildren.item(j);
-                    String name=currentChild.getNodeName();
-                    switch (name){
+                    String name = currentChild.getNodeName();
+                    switch (name) {
                         case Constant.TITLE:
                             String title = currentChild.getTextContent();
                             mCategory.setTitle(title);
@@ -63,6 +63,19 @@ public class ProcessXML {
                         case Constant.DESCRIPTION:
                             String description = currentChild.getTextContent();
                             mCategory.setDescription(description);
+                            break;
+                        case Constant.IMAGE:
+                            Element element = (Element) currentChild;
+                            NamedNodeMap attributes = element.getAttributes();
+                            Node enclosureItem = attributes.getNamedItem("url");
+                            String image = enclosureItem.getNodeValue();
+                            mCategory.setImage(image);
+                            break;
+                        case Constant.LINK:
+                            String link = currentChild.getTextContent();
+                            mCategory.setLink(link);
+                            break;
+                        default:
                             break;
                     }
                 }
