@@ -10,6 +10,15 @@ public class CategoryNews implements Serializable {
     private String mDescription;
     private String mImage;
     private String mLink;
+    private String mCategoryName;
+
+    public String getCategoryName() {
+        return mCategoryName;
+    }
+
+    public void setCategoryName(String name) {
+        mCategoryName = name;
+    }
 
     public String getLink() {
         return mLink;

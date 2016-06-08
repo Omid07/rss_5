@@ -15,34 +15,54 @@ import com.example.omid.rss_5.util.HttpAsyncCategoryShow;
 
 import java.util.ArrayList;
 
-public class NewsActivity extends AppCompatActivity implements HttpAsyncCategoryShow.OnParseCategoryListener, CategoryNewsViewHolder.ClickListener{
+public class NewsActivity extends AppCompatActivity implements HttpAsyncCategoryShow.OnParseCategoryListener, CategoryNewsViewHolder.ClickListener {
     private String[] mCategoryLink;
     private String mUrl;
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private ArrayList<CategoryNews> mCategoryNewsesList;
+    private DatabaseHelper mDatabaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news);
+        mDatabaseHelper = new DatabaseHelper(this);
         mRecyclerView = (RecyclerView) findViewById(R.id.category_news_recycler_view);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         int position = getIntent().getExtras().getInt(getString(R.string.position));
         Resources resources = getResources();
         mCategoryLink = resources.getStringArray(R.array.categories_link);
+        String[] categoryList = resources.getStringArray(R.array.categories);
+        String categoryName = categoryList[position];
         mUrl = mCategoryLink[position];
-        new HttpAsyncCategoryShow(NewsActivity.this, mUrl).execute();
+        ArrayList<CategoryNews> list = new ArrayList<>();
+        list = mDatabaseHelper.checkData(categoryName);
+        if (list.size() > 0) {
+            showData(list);
+        } else {
+            new HttpAsyncCategoryShow(NewsActivity.this, mUrl, categoryName).execute();
+        }
+    }
+
+    public void showData(ArrayList<CategoryNews> categoryNewsList) {
+        mCategoryNewsesList = new ArrayList<>();
+        for (int i = 0; i < categoryNewsList.size(); i++) {
+            mCategoryNewsesList.add(i, categoryNewsList.get(i));
+        }
+        mAdapter = new CategoryNewsAdapter(categoryNewsList);
+        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
     public void setData(ArrayList<CategoryNews> categoryNewsList) {
         mCategoryNewsesList = new ArrayList<>();
-        for(int i=0;i<categoryNewsList.size();i++) {
-            mCategoryNewsesList.add(i,categoryNewsList.get(i));
+        for (int i = 0; i < categoryNewsList.size(); i++) {
+            mCategoryNewsesList.add(i, categoryNewsList.get(i));
         }
+        mDatabaseHelper.insertData(categoryNewsList);
         mAdapter = new CategoryNewsAdapter(categoryNewsList);
         mRecyclerView.setAdapter(mAdapter);
     }
