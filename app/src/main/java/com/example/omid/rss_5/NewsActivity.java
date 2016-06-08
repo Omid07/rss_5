@@ -1,6 +1,7 @@
 package com.example.omid.rss_5;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,9 +12,12 @@ import android.view.View;
 import com.example.omid.rss_5.adapter.CategoryNewsAdapter;
 import com.example.omid.rss_5.ui.CategoryNewsViewHolder;
 import com.example.omid.rss_5.util.CategoryNews;
+import com.example.omid.rss_5.util.Constant;
 import com.example.omid.rss_5.util.HttpAsyncCategoryShow;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class NewsActivity extends AppCompatActivity implements HttpAsyncCategoryShow.OnParseCategoryListener, CategoryNewsViewHolder.ClickListener {
     private String[] mCategoryLink;
@@ -38,11 +42,23 @@ public class NewsActivity extends AppCompatActivity implements HttpAsyncCategory
         String[] categoryList = resources.getStringArray(R.array.categories);
         String categoryName = categoryList[position];
         mUrl = mCategoryLink[position];
-        ArrayList<CategoryNews> list = new ArrayList<>();
-        list = mDatabaseHelper.checkData(categoryName);
-        if (list.size() > 0) {
-            showData(list);
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(Constant.DATE_FORMATE);
+        String currentDate = dateFormat.format(calendar.getTime());
+        SharedPreferences prefs = getSharedPreferences(Constant.DATE, MODE_PRIVATE);
+        String storedDate = prefs.getString(Constant.DATE, null);
+        if (currentDate.equals(storedDate)) {
+            ArrayList<CategoryNews> list = new ArrayList<>();
+            list = mDatabaseHelper.checkData(categoryName);
+            if (list.size() > 0) {
+                showData(list);
+            } else {
+                new HttpAsyncCategoryShow(NewsActivity.this, mUrl, categoryName).execute();
+            }
         } else {
+            SharedPreferences.Editor editor = getSharedPreferences(Constant.DATE, MODE_PRIVATE).edit();
+            editor.putString(Constant.DATE, dateFormat.format(calendar.getTime()));
+            editor.commit();
             new HttpAsyncCategoryShow(NewsActivity.this, mUrl, categoryName).execute();
         }
     }
