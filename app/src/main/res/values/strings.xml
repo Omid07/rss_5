@@ -42,4 +42,6 @@
     <string name="date">Date</string>
     <string name="position">position</string>
     <string name="category_news">CategoryNews</string>
+    <string name="share">SHARE</string>
+    <string name="share_news">Share this news!!</string>
 </resources>
