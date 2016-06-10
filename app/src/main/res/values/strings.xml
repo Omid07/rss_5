@@ -44,4 +44,5 @@
     <string name="category_news">CategoryNews</string>
     <string name="share">SHARE</string>
     <string name="share_news">Share this news!!</string>
+    <string name="pdf">PDF</string>
 </resources>
