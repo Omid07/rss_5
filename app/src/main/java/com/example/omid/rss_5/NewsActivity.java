@@ -1,5 +1,6 @@
 package com.example.omid.rss_5;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import com.example.omid.rss_5.adapter.CategoryNewsAdapter;
 import com.example.omid.rss_5.ui.CategoryNewsViewHolder;
@@ -28,6 +30,7 @@ public class NewsActivity extends AppCompatActivity implements HttpAsyncCategory
     private ArrayList<CategoryNews> mCategoryNewsesList;
     private DatabaseHelper mDatabaseHelper;
     private ArrayList<CategoryNews> mNewsItemShow;
+    private ProgressBar spinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,7 @@ public class NewsActivity extends AppCompatActivity implements HttpAsyncCategory
         mRecyclerView = (RecyclerView) findViewById(R.id.category_news_recycler_view);
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
+        spinner = (ProgressBar) findViewById(R.id.progressBar);
         int position = getIntent().getExtras().getInt(getString(R.string.position));
         Resources resources = getResources();
         mCategoryLink = resources.getStringArray(R.array.categories_link);
@@ -54,17 +58,20 @@ public class NewsActivity extends AppCompatActivity implements HttpAsyncCategory
             if (list.size() > 0) {
                 showData(list);
             } else {
+                spinner.setVisibility(View.VISIBLE);
                 new HttpAsyncCategoryShow(NewsActivity.this, mUrl, categoryName).execute();
             }
         } else {
             SharedPreferences.Editor editor = getSharedPreferences(Constant.DATE, MODE_PRIVATE).edit();
             editor.putString(Constant.DATE, dateFormat.format(calendar.getTime()));
             editor.commit();
+            spinner.setVisibility(View.VISIBLE);
             new HttpAsyncCategoryShow(NewsActivity.this, mUrl, categoryName).execute();
         }
     }
 
     public void showData(ArrayList<CategoryNews> categoryNewsList) {
+        spinner.setVisibility(View.GONE);
         mCategoryNewsesList = new ArrayList<>();
         mNewsItemShow =categoryNewsList;
         for (int i = 0; i < Constant.LOAD_ITEM && i < categoryNewsList.size(); i++) {
@@ -77,6 +84,7 @@ public class NewsActivity extends AppCompatActivity implements HttpAsyncCategory
 
     @Override
     public void setData(ArrayList<CategoryNews> categoryNewsList) {
+        spinner.setVisibility(View.GONE);
         mCategoryNewsesList = new ArrayList<>();
         mNewsItemShow =categoryNewsList;
         for (int i = 0; i < Constant.LOAD_ITEM; i++) {

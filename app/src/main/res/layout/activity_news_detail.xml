@@ -65,5 +65,12 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_pub_date"
             android:text="@string/share" />
+
+        <Button
+            android:id="@+id/btn_pdf"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/btn_share"
+            android:text="@string/pdf"/>
     </RelativeLayout>
 </ScrollView>
