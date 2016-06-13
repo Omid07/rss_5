@@ -59,6 +59,7 @@ public class NewsActivity extends AppCompatActivity implements HttpAsyncCategory
                 showData(list);
             } else {
                 spinner.setVisibility(View.VISIBLE);
+                mDatabaseHelper.deleteOldData(categoryName);
                 new HttpAsyncCategoryShow(NewsActivity.this, mUrl, categoryName).execute();
             }
         } else {
@@ -66,6 +67,7 @@ public class NewsActivity extends AppCompatActivity implements HttpAsyncCategory
             editor.putString(Constant.DATE, dateFormat.format(calendar.getTime()));
             editor.commit();
             spinner.setVisibility(View.VISIBLE);
+            mDatabaseHelper.deleteOldData(categoryName);
             new HttpAsyncCategoryShow(NewsActivity.this, mUrl, categoryName).execute();
         }
     }
@@ -73,7 +75,7 @@ public class NewsActivity extends AppCompatActivity implements HttpAsyncCategory
     public void showData(ArrayList<CategoryNews> categoryNewsList) {
         spinner.setVisibility(View.GONE);
         mCategoryNewsesList = new ArrayList<>();
-        mNewsItemShow =categoryNewsList;
+        mNewsItemShow = categoryNewsList;
         for (int i = 0; i < Constant.LOAD_ITEM && i < categoryNewsList.size(); i++) {
             mCategoryNewsesList.add(categoryNewsList.get(i));
         }
@@ -86,7 +88,7 @@ public class NewsActivity extends AppCompatActivity implements HttpAsyncCategory
     public void setData(ArrayList<CategoryNews> categoryNewsList) {
         spinner.setVisibility(View.GONE);
         mCategoryNewsesList = new ArrayList<>();
-        mNewsItemShow =categoryNewsList;
+        mNewsItemShow = categoryNewsList;
         for (int i = 0; i < Constant.LOAD_ITEM; i++) {
             mCategoryNewsesList.add(i, categoryNewsList.get(i));
         }
@@ -112,8 +114,8 @@ public class NewsActivity extends AppCompatActivity implements HttpAsyncCategory
                 int count = recyclerView.getChildCount();
                 View firstVisibleChild = recyclerView.getChildAt(0);
                 int first = recyclerView.getChildAdapterPosition(firstVisibleChild);
-                if (newState == 0 && (first + count >= Constant.LOAD_ITEM) ) {
-                    int position=mAdapter.getItemCount();
+                if (newState == 0 && (first + count >= Constant.LOAD_ITEM)) {
+                    int position = mAdapter.getItemCount();
                     for (int i = position; i < position + Constant.LOAD_ITEM && i < mNewsItemShow.size(); i++) {
                         mCategoryNewsesList.add(mNewsItemShow.get(i));
                     }
