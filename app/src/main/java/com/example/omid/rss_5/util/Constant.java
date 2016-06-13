@@ -20,4 +20,6 @@ public class Constant {
     public static final String CREATE_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/RSS_Text";
     public static final String NO_CONNECTION = "Not Connected to Internet";
     public static final String APP_TYPE = "application/pdf";
+    public static final String PUBDATE_FORMATE = "EEE, dd MMM yyyy HH:mm:ss zzz";
+    public static final int DAYS = 10;
 }
