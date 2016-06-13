@@ -27,6 +27,7 @@ public class NewsActivity extends AppCompatActivity implements HttpAsyncCategory
     private RecyclerView.LayoutManager mLayoutManager;
     private ArrayList<CategoryNews> mCategoryNewsesList;
     private DatabaseHelper mDatabaseHelper;
+    private ArrayList<CategoryNews> mNewsItemShow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,22 +66,26 @@ public class NewsActivity extends AppCompatActivity implements HttpAsyncCategory
 
     public void showData(ArrayList<CategoryNews> categoryNewsList) {
         mCategoryNewsesList = new ArrayList<>();
-        for (int i = 0; i < categoryNewsList.size(); i++) {
-            mCategoryNewsesList.add(i, categoryNewsList.get(i));
+        mNewsItemShow =categoryNewsList;
+        for (int i = 0; i < Constant.LOAD_ITEM && i < categoryNewsList.size(); i++) {
+            mCategoryNewsesList.add(categoryNewsList.get(i));
         }
-        mAdapter = new CategoryNewsAdapter(categoryNewsList);
+        mAdapter = new CategoryNewsAdapter(mCategoryNewsesList);
         mRecyclerView.setAdapter(mAdapter);
+        paging();
     }
 
     @Override
     public void setData(ArrayList<CategoryNews> categoryNewsList) {
         mCategoryNewsesList = new ArrayList<>();
-        for (int i = 0; i < categoryNewsList.size(); i++) {
+        mNewsItemShow =categoryNewsList;
+        for (int i = 0; i < Constant.LOAD_ITEM; i++) {
             mCategoryNewsesList.add(i, categoryNewsList.get(i));
         }
         mDatabaseHelper.insertData(categoryNewsList);
-        mAdapter = new CategoryNewsAdapter(categoryNewsList);
+        mAdapter = new CategoryNewsAdapter(mCategoryNewsesList);
         mRecyclerView.setAdapter(mAdapter);
+        paging();
     }
 
     @Override
@@ -89,5 +94,24 @@ public class NewsActivity extends AppCompatActivity implements HttpAsyncCategory
         CategoryNews categoryNews = mCategoryNewsesList.get(position);
         intent.putExtra(getString(R.string.category_news), categoryNews);
         startActivity(intent);
+    }
+
+    public void paging(){
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                int count = recyclerView.getChildCount();
+                View firstVisibleChild = recyclerView.getChildAt(0);
+                int first = recyclerView.getChildAdapterPosition(firstVisibleChild);
+                if (newState == 0 && (first + count >= Constant.LOAD_ITEM) ) {
+                    int position=mAdapter.getItemCount();
+                    for (int i = position; i < position + Constant.LOAD_ITEM && i < mNewsItemShow.size(); i++) {
+                        mCategoryNewsesList.add(mNewsItemShow.get(i));
+                    }
+                    mAdapter.notifyDataSetChanged();
+                }
+            }
+        });
     }
 }

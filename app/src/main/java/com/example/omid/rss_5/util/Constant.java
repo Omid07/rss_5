@@ -14,4 +14,5 @@ public class Constant {
     public static final String LINK = "link";
     public static final String DATE_FORMATE = "dd-MMM-yyyy";
     public static final String SET_TYPE = "text/plain";
+    public static final int LOAD_ITEM = 20;
 }
