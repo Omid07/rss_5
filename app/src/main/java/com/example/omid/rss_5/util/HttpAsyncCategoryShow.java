@@ -36,7 +36,10 @@ public class HttpAsyncCategoryShow extends AsyncTask<Void, Void, ArrayList<Categ
             url = new URL(mCategoryUrl);
             HttpURLConnection connection = null;
             connection = (HttpURLConnection) url.openConnection();
+            connection.setReadTimeout(Constant.READ_TIMEOUT);
+            connection.setConnectTimeout(Constant.CONNECT_TIMEOUT);
             connection.setRequestMethod(Constant.GET);
+            connection.connect();
             InputStream inputStream = null;
             inputStream = connection.getInputStream();
             ProcessXML processXML = new ProcessXML(inputStream, mCategoryName);

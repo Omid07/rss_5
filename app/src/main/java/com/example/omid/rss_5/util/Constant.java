@@ -22,4 +22,6 @@ public class Constant {
     public static final String APP_TYPE = "application/pdf";
     public static final String PUBDATE_FORMATE = "EEE, dd MMM yyyy HH:mm:ss zzz";
     public static final int DAYS = 10;
+    public static final int READ_TIMEOUT = 10000;
+    public static final int CONNECT_TIMEOUT = 15000;
 }

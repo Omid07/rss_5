@@ -10,6 +10,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.omid.rss_5.adapter.CategoryNewsAdapter;
 import com.example.omid.rss_5.ui.CategoryNewsViewHolder;
@@ -89,13 +90,17 @@ public class NewsActivity extends AppCompatActivity implements HttpAsyncCategory
         spinner.setVisibility(View.GONE);
         mCategoryNewsesList = new ArrayList<>();
         mNewsItemShow = categoryNewsList;
-        for (int i = 0; i < Constant.LOAD_ITEM; i++) {
-            mCategoryNewsesList.add(i, categoryNewsList.get(i));
+        if (categoryNewsList != null) {
+            for (int i = 0; (i < Constant.LOAD_ITEM) && (i < categoryNewsList.size()); i++) {
+                mCategoryNewsesList.add(i, categoryNewsList.get(i));
+            }
+            mDatabaseHelper.insertData(categoryNewsList);
+            mAdapter = new CategoryNewsAdapter(mCategoryNewsesList);
+            mRecyclerView.setAdapter(mAdapter);
+            paging();
+        } else {
+            Toast.makeText(getApplicationContext(), Constant.NO_CONNECTION, Toast.LENGTH_LONG).show();
         }
-        mDatabaseHelper.insertData(categoryNewsList);
-        mAdapter = new CategoryNewsAdapter(mCategoryNewsesList);
-        mRecyclerView.setAdapter(mAdapter);
-        paging();
     }
 
     @Override

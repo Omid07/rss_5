@@ -1,6 +1,9 @@
 package com.example.omid.rss_5;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -80,12 +83,14 @@ public class NewsDetailActivity extends AppCompatActivity {
                 String author = mAuthor.getText().toString();
                 String imageUrl = mCategoryNews.getImage();
                 Image image = null;
-                try {
-                    image = Image.getInstance(new URL(imageUrl));
-                } catch (BadElementException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (isNetworkAvailable()) {
+                    try {
+                        image = Image.getInstance(new URL(imageUrl));
+                    } catch (BadElementException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
                 String description = mDescription.getText().toString();
                 String pubDate = mPubDate.getText().toString();
@@ -96,5 +101,11 @@ public class NewsDetailActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

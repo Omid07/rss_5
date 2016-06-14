@@ -1,5 +1,9 @@
 package com.example.omid.rss_5;
 
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+
 import com.example.omid.rss_5.util.Constant;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -32,7 +36,9 @@ public class PdfConvertion {
             document.open();
             document.add(new Paragraph(title));
             document.add(new Paragraph(author));
-            document.add(image);
+            if (image != null) {
+                document.add(image);
+            }
             document.add(new Paragraph(description));
             document.add(new Paragraph(pubDate));
         } catch (IOException e) {
