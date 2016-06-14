@@ -7,8 +7,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.omid.rss_5.util.CategoryNews;
+import com.example.omid.rss_5.util.Constant;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by omid on 6/6/16.
@@ -87,6 +93,40 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
         }
         return categoryNewsList;
+    }
+
+    public void deleteOldData(String categoryName) {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(Constant.DATE_FORMATE);
+        String currentDate = dateFormat.format(calendar.getTime());
+        calendar.add(Calendar.DAY_OF_YEAR, -Constant.DAYS);
+        SimpleDateFormat date = new SimpleDateFormat(Constant.DATE_FORMATE);
+        String lastDate = date.format(calendar.getTime());
+        Date lastNewsDate = new Date();
+        try {
+            lastNewsDate = dateFormat.parse(lastDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        SQLiteDatabase database = this.getReadableDatabase();
+        String selectQuery = "SELECT * FROM " + TABLE_NAME + " WHERE " + CATEGORY_NAME + " = '" + categoryName + "'";
+        Cursor cursor = database.rawQuery(selectQuery, null);
+        if (cursor != null & cursor.getCount() > 0) {
+            cursor.moveToFirst();
+            for (int i = 0; i < cursor.getCount(); i++) {
+                String pubDate = cursor.getString(cursor.getColumnIndex(NEWS_PUBDATE));
+                SimpleDateFormat pubDateFormate = new SimpleDateFormat(Constant.PUBDATE_FORMATE);
+                try {
+                    Date newsPubDate = pubDateFormate.parse(pubDate);
+                    if (newsPubDate.before(lastNewsDate)) {
+                        database.delete(TABLE_NAME, NEWS_PUBDATE + " = ?", new String[]{pubDate});
+                    }
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                cursor.moveToNext();
+            }
+        }
     }
 }
 
