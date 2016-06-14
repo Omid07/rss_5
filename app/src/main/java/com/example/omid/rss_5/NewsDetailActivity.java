@@ -31,36 +31,45 @@ public class NewsDetailActivity extends AppCompatActivity {
     private TextView mPubDate;
     private ImageView mImage;
     private TextView mLink;
+    private TextView mViewed;
     private Button mShare, mPdf;
+    private DatabaseHelper mDatabaseHelper;
+    private CategoryNews mCategoryNews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_news_detail);
-        final CategoryNews categoryNews = (CategoryNews) getIntent().getSerializableExtra(getString(R.string.category_news));
-        mShare = (Button) findViewById(R.id.btn_share);
-        mPdf = (Button) findViewById(R.id.btn_pdf);
+        mDatabaseHelper = new DatabaseHelper(this);
+        mCategoryNews = (CategoryNews) getIntent().getSerializableExtra(getString(R.string.category_news));
+        mViewed = (TextView) findViewById(R.id.text_viewed);
+        mShare = (Button) findViewById(R.id.button_share);
+        mPdf = (Button) findViewById(R.id.button_pdf);
         mTitle = (TextView) findViewById(R.id.text_title);
         mAuthor = (TextView) findViewById(R.id.text_author);
         mDescription = (TextView) findViewById(R.id.text_description);
         mPubDate = (TextView) findViewById(R.id.text_pub_date);
         mImage = (ImageView) findViewById(R.id.image_news);
         mLink = (TextView) findViewById(R.id.text_link);
-        mTitle.setText(categoryNews.getTitle());
-        mAuthor.setText(categoryNews.getAuthor());
-        mDescription.setText(categoryNews.getDescription());
-        mLink.setText(categoryNews.getLink());
-        mPubDate.setText(categoryNews.getPubDate());
+        if (mDatabaseHelper.viewed(mCategoryNews.getCategoryName(), mCategoryNews.getPubDate())) {
+            mViewed.setText(getString(R.string.viewd));
+        }
+        mTitle.setText(mCategoryNews.getTitle());
+        mAuthor.setText(mCategoryNews.getAuthor());
+        mDescription.setText(mCategoryNews.getDescription());
+        mLink.setText(mCategoryNews.getLink());
+        mPubDate.setText(mCategoryNews.getPubDate());
         Picasso.with(this)
-        .load(categoryNews.getImage())
+        .load(mCategoryNews.getImage())
         .into(mImage);
+        mDatabaseHelper.lastViewDate(mCategoryNews.getCategoryName(), mCategoryNews.getTitle());
         mShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent shareIntent = new Intent();
                 shareIntent.setAction(Intent.ACTION_SEND);
                 shareIntent.setType(Constant.SET_TYPE);
-                shareIntent.putExtra(Intent.EXTRA_TEXT, categoryNews.getLink());
+                shareIntent.putExtra(Intent.EXTRA_TEXT, mCategoryNews.getLink());
                 startActivity(Intent.createChooser(shareIntent, getString(R.string.share)));
             }
         });
@@ -69,7 +78,7 @@ public class NewsDetailActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String title = mTitle.getText().toString();
                 String author = mAuthor.getText().toString();
-                String imageUrl = categoryNews.getImage();
+                String imageUrl = mCategoryNews.getImage();
                 Image image = null;
                 try {
                     image = Image.getInstance(new URL(imageUrl));
