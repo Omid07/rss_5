@@ -30,10 +30,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String NEWS_AUTHOR = "author";
     private static final String NEWS_LINK = "link";
     private static final String NEWS_IMAGE = "image_url";
+    private static final String LAST_VIEW_DATE = "last_view";
 
     private static final String CREATE_TABLE_RESULT = "CREATE TABLE " + TABLE_NAME
             + "(" + ID + " INTEGER PRIMARY KEY, " + CATEGORY_NAME +
-            " text, " + NEWS_TITLE + " text, " + NEWS_DESCRIPTION + " text, " + NEWS_PUBDATE + " text, " + NEWS_AUTHOR + " text, " + NEWS_LINK + " text, " + NEWS_IMAGE + " text )";
+            " text, " + NEWS_TITLE + " text, " + NEWS_DESCRIPTION + " text, " + NEWS_PUBDATE + " text, " + NEWS_AUTHOR + " text, " + NEWS_LINK + " text, " + NEWS_IMAGE + " text, " + LAST_VIEW_DATE + " text )";
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, 1);
@@ -128,5 +129,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }
         }
     }
-}
 
+    public void lastViewDate(String categoryName, String title) {
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(Constant.DATE_FORMATE);
+        String viewDate = dateFormat.format(calendar.getTime());
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(DatabaseHelper.LAST_VIEW_DATE, viewDate);
+        String[] selectionArgs = new String[]{categoryName, title};
+        db.update(TABLE_NAME, contentValues, CATEGORY_NAME + " = ?  AND " + NEWS_TITLE + " = ? ", selectionArgs);
+    }
+
+    public boolean viewed(String categoryName, String pubDate) {
+        SQLiteDatabase database = this.getReadableDatabase();
+        String selectQuery = "SELECT * FROM " + TABLE_NAME + " WHERE " + CATEGORY_NAME + " = '" + categoryName + "' AND " + NEWS_PUBDATE + " = '" + pubDate + "' AND " + LAST_VIEW_DATE + " IS NOT NULL";
+        Cursor cursor = database.rawQuery(selectQuery, null);
+        if (cursor != null & cursor.getCount() > 0) {
+            return true;
+        }
+        return false;
+    }
+}
